@@ -77,6 +77,9 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     /// The action button
     open var actionButton: UIButton?
     
+    /// The comment button
+    open var commentButton: UIButton?
+    
     /// The view used to show the progress
     open var progressTrackView: UIView?
     
@@ -207,6 +210,10 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
             setupActionButton()
         }
         
+        if options.showCommentsButton ?? false {
+            setupCommentButton()
+        }
+        
         setupCaptionView()
 
         if options.showProgress {
@@ -328,6 +335,37 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         view.addSubview(actionButton)
     }
     
+    fileprivate func setupCommentButton() {
+        if let commentButton = self.commentButton {
+            commentButton.removeFromSuperview()
+        }
+        
+        let avaiableSize = getInitialAvaiableSize()
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 0)
+        
+        let commentButton = UIButton(frame: closeButtonFrame)
+        
+        commentButton.setTitle("💬", for: UIControlState())
+        commentButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
+        commentButton.setTitleColor(theme.closeButtonColor, for: UIControlState())
+        
+        commentButton.addTarget(self, action: #selector(commentButtonTouched(_:)), for: .touchUpInside)
+        
+        
+        var shouldBeHidden = false
+        
+        if self.commentButton != nil {
+            shouldBeHidden = self.commentButton!.isHidden
+        }
+        
+        commentButton.isHidden = shouldBeHidden
+        
+        
+        self.commentButton = commentButton
+        
+        view.addSubview(commentButton)
+    }
+    
     fileprivate func setupProgressIndicator() {
         let avaiableSize = getInitialAvaiableSize()
         let progressFrame = getProgressViewFrame(avaiableSize)
@@ -383,7 +421,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         setupCloseButton()
         setupActionButton()
-        
+        setupCommentButton()
         updateContentOffset()
         
         updateCaptionText()
@@ -567,6 +605,14 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         }
         
         showShareActivity()
+    }
+    
+    @objc internal func commentButtonTouched(_ sender: AnyObject) {
+        
+        if let customHandleBlock = options.commentBlock {
+            customHandleBlock(pictures[currentPageIndex])
+            return
+        }
     }
     
     internal func showShareActivity() {
