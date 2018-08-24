@@ -62,6 +62,8 @@ open class CollieGalleryOptions: NSObject {
     /// Indicates whether a close button should be shown 
     open var showCloseButton: Bool? = true
     
+    open var showCommentsButton: Bool? = true
+    
     /// Custom close button image name
     open var customCloseImageName: String? = nil
     
@@ -76,6 +78,8 @@ open class CollieGalleryOptions: NSObject {
     
     /// Add fire custom block instead of showing default share menu
     open var customOptionsBlock: (() -> Void)?
+    
+    open var commentBlock: ((CollieGalleryPicture) -> Void)?
     
     /// Array with the custom buttons
     open var customActions: [CollieGalleryCustomAction] = []
