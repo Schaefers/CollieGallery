@@ -352,7 +352,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         let commentButton = UIButton(frame: closeButtonFrame)
         
         //commentButton.setTitle("💬", for: UIControlState())
-        commentButton.setImage(UIImage(named: "comment", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControlState())
+        commentButton.setImage(UIImage(named: "CollieGallery.bundle/comment", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControlState())
         commentButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
         commentButton.setTitleColor(theme.closeButtonColor, for: UIControlState())
         
@@ -385,7 +385,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         //likeButton.setTitle("👍", for: UIControlState())
         
-        likeButton.setImage(UIImage(named: "like", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControlState())
+        likeButton.setImage(UIImage(named: "CollieGallery.bundle/like", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControlState())
         likeButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
         likeButton.setTitleColor(theme.closeButtonColor, for: UIControlState())
         
