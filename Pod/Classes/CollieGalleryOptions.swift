@@ -64,6 +64,8 @@ open class CollieGalleryOptions: NSObject {
     
     open var showCommentsButton: Bool? = true
     
+    open var showLikeButton: Bool? = true
+    
     /// Custom close button image name
     open var customCloseImageName: String? = nil
     
@@ -80,6 +82,8 @@ open class CollieGalleryOptions: NSObject {
     open var customOptionsBlock: (() -> Void)?
     
     open var commentBlock: ((CollieGalleryPicture) -> Void)?
+    
+    open var likeBlock: ((CollieGalleryPicture) -> Void)?
     
     /// Array with the custom buttons
     open var customActions: [CollieGalleryCustomAction] = []
