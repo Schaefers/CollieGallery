@@ -32,7 +32,7 @@ open class CollieGalleryPicture: NSObject {
     internal var placeholder: UIImage?
     internal var title: String?
     internal var caption: String?
-    
+    internal var uid: Int32?
     
     // MARK: - Initializers
     
@@ -46,11 +46,12 @@ open class CollieGalleryPicture: NSObject {
             - caption: An optional caption to describe the image
      
     */
-    public convenience init(image: UIImage, title: String? = nil, caption: String? = nil) {
+    public convenience init(image: UIImage, title: String? = nil, caption: String? = nil, uid: Int32? = nil) {
         self.init()
         self.image = image
         self.title = title
         self.caption = caption
+        self.uid = uid
     }
     
     /**
@@ -64,11 +65,12 @@ open class CollieGalleryPicture: NSObject {
             - caption: An optional caption to describe the image
      
     */
-    public convenience init(url: String, placeholder: UIImage? = nil, title: String? = nil, caption: String? = nil) {
+    public convenience init(url: String, placeholder: UIImage? = nil, title: String? = nil, caption: String? = nil, uid: Int32? = nil) {
         self.init()
         self.url = url
         self.placeholder = placeholder
         self.title = title
         self.caption = caption
+        self.uid = uid
     }
 }

@@ -77,11 +77,19 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     /// The action button
     open var actionButton: UIButton?
     
+    /// The comment button
+    open var commentButton: UIButton?
+    
+    open var likeButton: UIButton?
+    
     /// The view used to show the progress
     open var progressTrackView: UIView?
     
     /// The background view of the progress bar
     open var progressBarView: UIView?
+    
+    /// The control to show current page
+    open var pageControl: UIPageControl?
     
     /// The view used to display the title and caption properties
     open var captionView: CollieGalleryCaptionView!
@@ -145,6 +153,10 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         pagingScrollView.delegate = self
         scrollToIndex(options.openAtIndex, animated: false)
+        
+        if let pageC = pageControl {
+            pageC.currentPage = currentPageIndex
+        }
     }
     
     open override func viewDidAppear(_ animated: Bool) {
@@ -200,10 +212,31 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
             setupActionButton()
         }
         
+        if options.showCommentsButton ?? false {
+            setupCommentButton()
+        }
+        
+        if options.showLikeButton ?? false {
+            setupLikeButton()
+        }
+        
         setupCaptionView()
 
         if options.showProgress {
             setupProgressIndicator()
+        }
+        
+        if options.showPageControl {
+            pageControl = UIPageControl(frame: CGRect(x: view.frame.size.width / 2, y: view.frame.size.height - 11, width: 0, height: 0))
+            pageControl?.currentPageIndicatorTintColor = theme.pageControlCurrentIndicatorColor
+            pageControl?.numberOfPages = pictures.count
+            pageControl?.currentPage = currentPageIndex
+
+            if #available(iOS 11.0, *) {
+                pageControl?.accessibilityIgnoresInvertColors = true
+            }
+
+            view.addSubview(pageControl!)
         }
         
         loadImagesNextToIndex(currentPageIndex)
@@ -265,7 +298,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
             closeButton.setTitle("+", for: UIControlState())
             closeButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Medium", size: 30)
             closeButton.setTitleColor(theme.closeButtonColor, for: UIControlState())
-            closeButton.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI_4))
+            closeButton.transform = CGAffineTransform(rotationAngle: .pi / 4)
         }
         closeButton.addTarget(self, action: #selector(closeButtonTouched), for: .touchUpInside)
         closeButton.isHidden = !options.showCloseButton!
@@ -306,6 +339,71 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         self.actionButton = actionButton
         
         view.addSubview(actionButton)
+    }
+    
+    fileprivate func setupCommentButton() {
+        if let commentButton = self.commentButton {
+            commentButton.removeFromSuperview()
+        }
+        
+        let avaiableSize = getInitialAvaiableSize()
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 0)
+        
+        let commentButton = UIButton(frame: closeButtonFrame)
+        
+        //commentButton.setTitle("💬", for: UIControlState())
+        commentButton.setImage(UIImage(named: "comment", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControlState())
+        commentButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
+        commentButton.setTitleColor(theme.closeButtonColor, for: UIControlState())
+        
+        commentButton.addTarget(self, action: #selector(commentButtonTouched(_:)), for: .touchUpInside)
+        
+        
+        var shouldBeHidden = false
+        
+        if self.commentButton != nil {
+            shouldBeHidden = self.commentButton!.isHidden
+        }
+        
+        commentButton.isHidden = shouldBeHidden
+        
+        
+        self.commentButton = commentButton
+        
+        view.addSubview(commentButton)
+    }
+    
+    fileprivate func setupLikeButton() {
+        if let likeButton = self.likeButton {
+            likeButton.removeFromSuperview()
+        }
+        
+        let avaiableSize = getInitialAvaiableSize()
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 1)
+        
+        let likeButton = UIButton(frame: closeButtonFrame)
+        
+        //likeButton.setTitle("👍", for: UIControlState())
+        
+        likeButton.setImage(UIImage(named: "like", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControlState())
+        likeButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
+        likeButton.setTitleColor(theme.closeButtonColor, for: UIControlState())
+        
+        likeButton.addTarget(self, action: #selector(likeButtonTouched(_:)), for: .touchUpInside)
+        
+        
+        var shouldBeHidden = false
+        
+        if self.likeButton != nil {
+            shouldBeHidden = self.likeButton!.isHidden
+        }
+        
+        likeButton.isHidden = shouldBeHidden
+        
+        
+        self.likeButton = likeButton
+        
+        view.addSubview(likeButton)
     }
     
     fileprivate func setupProgressIndicator() {
@@ -363,7 +461,8 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         setupCloseButton()
         setupActionButton()
-        
+        setupCommentButton()
+        setupLikeButton()
         updateContentOffset()
         
         updateCaptionText()
@@ -449,6 +548,8 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     fileprivate func showControls() {
         closeButton.isHidden = false
         actionButton?.isHidden = false
+        commentButton?.isHidden = false
+        likeButton?.isHidden = false
         progressTrackView?.isHidden = false
         captionView.isHidden = captionView.titleLabel.text == nil && captionView.captionLabel.text == nil
         
@@ -457,6 +558,8 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
                                    animations: { [weak self] in
                                                     self?.closeButton.alpha = 1.0
                                                     self?.actionButton?.alpha = 1.0
+                                                    self?.commentButton?.alpha = 1.0
+                                                    self?.likeButton?.alpha = 1.0
                                                     self?.progressTrackView?.alpha = 1.0
                                                     self?.captionView.alpha = 1.0
                                    }, completion: nil)
@@ -468,12 +571,16 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
                                    animations: { [weak self] in
                                         self?.closeButton.alpha = 0.0
                                         self?.actionButton?.alpha = 0.0
+                                        self?.commentButton?.alpha = 0.0
+                                        self?.likeButton?.alpha = 0.0
                                         self?.progressTrackView?.alpha = 0.0
                                         self?.captionView.alpha = 0.0
                                    },
                                    completion: { [weak self] _ in
                                         self?.closeButton.isHidden = true
                                         self?.actionButton?.isHidden = true
+                                        self?.commentButton?.isHidden = true
+                                        self?.likeButton?.isHidden = true
                                         self?.progressTrackView?.isHidden = true
                                         self?.captionView.isHidden = true
                                    })
@@ -512,6 +619,10 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         captionView.captionLabel.text = picture.caption
         
         captionView.adjustView()
+        
+        if let pageC = pageControl {
+            pageC.currentPage = currentPageIndex
+        }
     }
     
     
@@ -545,6 +656,22 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         showShareActivity()
     }
     
+    @objc internal func commentButtonTouched(_ sender: AnyObject) {
+        
+        if let customHandleBlock = options.commentBlock {
+            customHandleBlock(pictures[currentPageIndex])
+            return
+        }
+    }
+    
+    @objc internal func likeButtonTouched(_ sender: AnyObject) {
+        
+        if let customHandleBlock = options.likeBlock {
+            customHandleBlock(pictures[currentPageIndex])
+            return
+        }
+    }
+    
     internal func showShareActivity() {
         if let image = displayedImageView.image {
             let objectsToShare = [image]
@@ -575,7 +702,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
 
         if let progressBarView = progressBarView, let progressTrackView = progressTrackView {
             let maxProgress = progressTrackView.frame.size.width * CGFloat(pictures.count - 1)
-            let currentGap = CGFloat(currentPageIndex) * options.gapBetweenPages
+            let currentGap = CGFloat(currentPageIndex + 1) * options.gapBetweenPages
             let offset = scrollView.contentOffset.x - currentGap
             let progress = (maxProgress - (maxProgress - offset)) / CGFloat(pictures.count - 1)
             progressBarView.frame.size.width = max(progress, 0)

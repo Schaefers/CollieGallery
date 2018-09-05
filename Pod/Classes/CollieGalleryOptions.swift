@@ -32,19 +32,22 @@ open class CollieGalleryOptions: NSObject {
     /// The amount of the parallax effect from 0 to 1
     open var parallaxFactor: CGFloat = 0.2
     
-    /// Indicates weather the pictures can be zoomed or not
+    /// Indicates whether the pictures can be zoomed or not
     open var enableZoom: Bool = true
     
     /// The maximum scale that images can reach when zoomed
     open var maximumZoomScale: CGFloat = 5.0
     
-    /// Indicates weather the progress should be displayed or not
+    /// Indicates whether the progress should be displayed or not
     open var showProgress: Bool = true
+    
+    /// Indicates whether the page control should be displayed or not
+    open var showPageControl: Bool = false
     
     /// Indicates whether iOS' status bar will be shown
     open var hideStatusBar: Bool = true
     
-    /// Indicates weather the caption view should be displayed or not
+    /// Indicates whether the caption view should be displayed or not
     open var showCaptionView: Bool = false
     
     /// The amount of pictures that should be preloaded next to the current displayed picture
@@ -59,6 +62,10 @@ open class CollieGalleryOptions: NSObject {
     /// Indicates whether a close button should be shown 
     open var showCloseButton: Bool? = true
     
+    open var showCommentsButton: Bool? = true
+    
+    open var showLikeButton: Bool? = true
+    
     /// Custom close button image name
     open var customCloseImageName: String? = nil
     
@@ -72,7 +79,11 @@ open class CollieGalleryOptions: NSObject {
     open var enableInteractiveDismiss: Bool = true
     
     /// Add fire custom block instead of showing default share menu
-    open var customOptionsBlock: ((Void) -> Void)?
+    open var customOptionsBlock: (() -> Void)?
+    
+    open var commentBlock: ((CollieGalleryPicture) -> Void)?
+    
+    open var likeBlock: ((CollieGalleryPicture) -> Void)?
     
     /// Array with the custom buttons
     open var customActions: [CollieGalleryCustomAction] = []
