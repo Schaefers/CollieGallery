@@ -224,6 +224,11 @@ options.excludedActions = [UIActivityTypeAssignToContact, UIActivityTypeCopyToPa
 let gallery = CollieGallery(pictures: pictures, options: options)
 ```
 
+### Additional Modifications
+
+* All `init()` functions take the image uid as paramter
+* The `CollieGalleryOptions` take a custom block for `commentBlock` and `likeBlock`, that are excecuted, when the corresponding buttons are pressed
+
 ## Requirements
 
 * iOS 8.0
