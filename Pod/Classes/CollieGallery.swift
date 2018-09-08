@@ -729,8 +729,8 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         if scrollView?.zoomScale == scrollView?.minimumZoomScale {
             toggleControlsVisibility()
-            
         }
+        delegate?.gallery?(self, didTouch: pictures[currentPageIndex], at: currentPageIndex)
     }
     
     func galleryViewPressed(_ scrollview: CollieGalleryView) {

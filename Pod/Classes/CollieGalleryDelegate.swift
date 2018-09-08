@@ -14,4 +14,6 @@ import UIKit
     /// Called when the gallery index changes
     @objc optional func gallery(_ gallery: CollieGallery, indexChangedTo index: Int)
     
+    /// Called when the user touches the image
+    @objc optional func gallery(_ gallery: CollieGallery, didTouch image: CollieGalleryPicture, at index: Int)
 }
