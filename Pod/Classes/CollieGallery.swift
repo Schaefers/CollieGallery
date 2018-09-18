@@ -293,11 +293,11 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         let closeButton = UIButton(frame: closeButtonFrame)
         if let customImageName = options.customCloseImageName,
             let image = UIImage(named: customImageName) {
-            closeButton.setImage(image, for: UIControlState())
+            closeButton.setImage(image, for: UIControl.State())
         } else {
-            closeButton.setTitle("+", for: UIControlState())
+            closeButton.setTitle("+", for: UIControl.State())
             closeButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Medium", size: 30)
-            closeButton.setTitleColor(theme.closeButtonColor, for: UIControlState())
+            closeButton.setTitleColor(theme.closeButtonColor, for: UIControl.State())
             closeButton.transform = CGAffineTransform(rotationAngle: .pi / 4)
         }
         closeButton.addTarget(self, action: #selector(closeButtonTouched), for: .touchUpInside)
@@ -317,11 +317,11 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         let actionButton = UIButton(frame: closeButtonFrame)
         if let customImageName = options.customOptionsImageName,
             let image = UIImage(named: customImageName) {
-            closeButton.setImage(image, for: UIControlState())
+            closeButton.setImage(image, for: UIControl.State())
         } else {
-            actionButton.setTitle("•••", for: UIControlState())
+            actionButton.setTitle("•••", for: UIControl.State())
             actionButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
-            actionButton.setTitleColor(theme.closeButtonColor, for: UIControlState())
+            actionButton.setTitleColor(theme.closeButtonColor, for: UIControl.State())
         }
         
         actionButton.addTarget(self, action: #selector(actionButtonTouched), for: .touchUpInside)
@@ -352,9 +352,9 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         let commentButton = UIButton(frame: closeButtonFrame)
         
         //commentButton.setTitle("💬", for: UIControlState())
-        commentButton.setImage(UIImage(named: "CollieGallery.bundle/comment", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControlState())
+        commentButton.setImage(UIImage(named: "CollieGallery.bundle/comment", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControl.State())
         commentButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
-        commentButton.setTitleColor(theme.closeButtonColor, for: UIControlState())
+        commentButton.setTitleColor(theme.closeButtonColor, for: UIControl.State())
         
         commentButton.addTarget(self, action: #selector(commentButtonTouched(_:)), for: .touchUpInside)
         
@@ -385,9 +385,9 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         //likeButton.setTitle("👍", for: UIControlState())
         
-        likeButton.setImage(UIImage(named: "CollieGallery.bundle/like", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControlState())
+        likeButton.setImage(UIImage(named: "CollieGallery.bundle/like", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControl.State())
         likeButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
-        likeButton.setTitleColor(theme.closeButtonColor, for: UIControlState())
+        likeButton.setTitleColor(theme.closeButtonColor, for: UIControl.State())
         
         likeButton.addTarget(self, action: #selector(likeButtonTouched(_:)), for: .touchUpInside)
         
@@ -554,7 +554,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         captionView.isHidden = captionView.titleLabel.text == nil && captionView.captionLabel.text == nil
         
         UIView.animate(withDuration: 0.2, delay: 0.0,
-                                   options: UIViewAnimationOptions(),
+                       options: UIView.AnimationOptions(),
                                    animations: { [weak self] in
                                                     self?.closeButton.alpha = 1.0
                                                     self?.actionButton?.alpha = 1.0
@@ -567,7 +567,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     
     fileprivate func hideControls() {
         UIView.animate(withDuration: 0.2, delay: 0.0,
-                                   options: UIViewAnimationOptions(),
+                       options: UIView.AnimationOptions(),
                                    animations: { [weak self] in
                                         self?.closeButton.alpha = 0.0
                                         self?.actionButton?.alpha = 0.0
