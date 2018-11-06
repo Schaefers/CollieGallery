@@ -32,7 +32,7 @@ open class CollieGalleryPicture: NSObject {
     internal var placeholder: UIImage?
     internal var title: String?
     internal var caption: String?
-    var uid: Int32?
+    open var uid: Int32?
     
     // MARK: - Initializers
     
