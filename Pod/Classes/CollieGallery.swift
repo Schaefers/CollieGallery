@@ -22,6 +22,7 @@
 //  THE SOFTWARE.
 
 import UIKit
+import DeviceKit
 
 /// Class used to display the gallery
 open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryViewDelegate {
@@ -51,6 +52,9 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     
     fileprivate var initialCustomSize: CGSize?
     
+    fileprivate var buttonYOffset: CGFloat {
+        return Device().isOneOf(Device.allXSeriesDevices + Device.allSimulatorXSeriesDevices) ? 30 : 0
+    }
     // MARK: - Internal properties
     internal var options = CollieGalleryOptions()
     internal var displayedView: CollieGalleryView {
@@ -599,17 +603,17 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     }
     
     fileprivate func getCloseButtonFrame(_ avaiableSize: CGSize) -> CGRect {
-        return CGRect(x: 0, y: 0, width: 50, height: 50)
+        return CGRect(x: 0, y: buttonYOffset, width: 50, height: 50)
     }
     
     fileprivate func getActionButtonFrame(_ avaiableSize: CGSize) -> CGRect {
-        return CGRect(x: avaiableSize.width - 50, y: 0, width: 50, height: 50)
+        return CGRect(x: avaiableSize.width - 50, y: buttonYOffset, width: 50, height: 50)
     }
     
     fileprivate func getCustomButtonFrame(_ avaiableSize: CGSize, forIndex index: Int) -> CGRect {
         let position = index + 2
         
-        return CGRect(x: avaiableSize.width - CGFloat(50 * position), y: 0, width: 50, height: 50)
+        return CGRect(x: avaiableSize.width - CGFloat(50 * position), y: buttonYOffset, width: 50, height: 50)
     }
     
     fileprivate func updateCaptionText () {
