@@ -24,7 +24,7 @@
 import UIKit
 
 /// Class used to customize the gallery options
-open class CollieGalleryOptions: NSObject {
+public class CollieGalleryOptions: NSObject {
     
     /// Shared options between all new instances of the gallery
     open static var sharedOptions = CollieGalleryOptions()
