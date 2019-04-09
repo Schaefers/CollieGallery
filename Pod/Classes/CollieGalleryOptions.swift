@@ -24,10 +24,10 @@
 import UIKit
 
 /// Class used to customize the gallery options
-public class CollieGalleryOptions: NSObject {
+open class CollieGalleryOptions: NSObject {
     
     /// Shared options between all new instances of the gallery
-    open static var sharedOptions = CollieGalleryOptions()
+    public static var sharedOptions = CollieGalleryOptions()
     
     /// The amount of the parallax effect from 0 to 1
     open var parallaxFactor: CGFloat = 0.2

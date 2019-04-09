@@ -24,10 +24,10 @@
 import UIKit
 
 /// Class used to customize the appearance
-public class CollieGalleryAppearance: NSObject {
+open class CollieGalleryAppearance: NSObject {
     
     /// Shared appearance between all new instances of the gallery
-    open static var sharedAppearance = CollieGalleryAppearance()
+    public static var sharedAppearance = CollieGalleryAppearance()
     
     /// The background color of the gallery
     open var backgroundColor = UIColor.black
