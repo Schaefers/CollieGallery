@@ -53,7 +53,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     fileprivate var initialCustomSize: CGSize?
     
     fileprivate var buttonYOffset: CGFloat {
-        return Device().isOneOf(Device.allXSeriesDevices + Device.allSimulatorXSeriesDevices) ? 30 : 0
+        return Device.current.isOneOf(Device.allXSeriesDevices + Device.allSimulatorXSeriesDevices) ? 30 : 0
     }
     // MARK: - Internal properties
     internal var options = CollieGalleryOptions()
