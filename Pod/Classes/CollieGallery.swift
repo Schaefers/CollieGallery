@@ -86,6 +86,8 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     
     open var likeButton: UIButton?
     
+    open var measurementButton: UIButton?
+    
     /// The view used to show the progress
     open var progressTrackView: UIView?
     
@@ -222,6 +224,10 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         if options.showLikeButton ?? false {
             setupLikeButton()
+        }
+        
+        if options.showMeasurementButton ?? false {
+            setupMeasurementButton()
         }
         
         setupCaptionView()
@@ -409,6 +415,39 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         view.addSubview(likeButton)
     }
+
+    fileprivate func setupMeasurementButton() {
+        if let likeButton = self.measurementButton {
+            likeButton.removeFromSuperview()
+        }
+        
+        let avaiableSize = getInitialAvaiableSize()
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 2)
+        
+        let measurementButton = UIButton(frame: closeButtonFrame)
+        
+        //likeButton.setTitle("👍", for: UIControlState())
+        
+        measurementButton.setImage(UIImage(named: "CollieGallery.bundle/ruler", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControl.State())
+        measurementButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
+        measurementButton.setTitleColor(theme.closeButtonColor, for: UIControl.State())
+        
+        measurementButton.addTarget(self, action: #selector(measurementButtonTouched(_:)), for: .touchUpInside)
+        
+        
+        var shouldBeHidden = false
+        
+        if self.measurementButton != nil {
+            shouldBeHidden = self.measurementButton!.isHidden
+        }
+        
+        measurementButton.isHidden = shouldBeHidden
+        
+        
+        self.measurementButton = measurementButton
+        
+        view.addSubview(measurementButton)
+    }
     
     fileprivate func setupProgressIndicator() {
         let avaiableSize = getInitialAvaiableSize()
@@ -467,6 +506,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         setupActionButton()
         setupCommentButton()
         setupLikeButton()
+        setupMeasurementButton()
         updateContentOffset()
         
         updateCaptionText()
@@ -554,6 +594,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         actionButton?.isHidden = false
         commentButton?.isHidden = false
         likeButton?.isHidden = false
+        measurementButton?.isHidden = false
         progressTrackView?.isHidden = false
         captionView.isHidden = captionView.titleLabel.text == nil && captionView.captionLabel.text == nil
         
@@ -564,6 +605,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
                                                     self?.actionButton?.alpha = 1.0
                                                     self?.commentButton?.alpha = 1.0
                                                     self?.likeButton?.alpha = 1.0
+                                                    self?.measurementButton?.alpha = 1.0
                                                     self?.progressTrackView?.alpha = 1.0
                                                     self?.captionView.alpha = 1.0
                                    }, completion: nil)
@@ -577,6 +619,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
                                         self?.actionButton?.alpha = 0.0
                                         self?.commentButton?.alpha = 0.0
                                         self?.likeButton?.alpha = 0.0
+                                        self?.measurementButton?.alpha = 0.0
                                         self?.progressTrackView?.alpha = 0.0
                                         self?.captionView.alpha = 0.0
                                    },
@@ -585,6 +628,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
                                         self?.actionButton?.isHidden = true
                                         self?.commentButton?.isHidden = true
                                         self?.likeButton?.isHidden = true
+                                        self?.measurementButton?.isHidden = true
                                         self?.progressTrackView?.isHidden = true
                                         self?.captionView.isHidden = true
                                    })
@@ -671,6 +715,14 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     @objc internal func likeButtonTouched(_ sender: AnyObject) {
         
         if let customHandleBlock = options.likeBlock {
+            customHandleBlock(pictures[currentPageIndex])
+            return
+        }
+    }
+
+    @objc internal func measurementButtonTouched(_ sender: AnyObject) {
+        
+        if let customHandleBlock = options.measurementBlock {
             customHandleBlock(pictures[currentPageIndex])
             return
         }
