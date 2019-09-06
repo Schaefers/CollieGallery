@@ -88,6 +88,8 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     
     open var measurementButton: UIButton?
     
+    open var deleteButton: UIButton?
+    
     /// The view used to show the progress
     open var progressTrackView: UIView?
     
@@ -230,6 +232,10 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
             setupMeasurementButton()
         }
         
+        if options.showDeleteButton ?? false {
+            setupDeleteButton()
+        }
+        
         setupCaptionView()
 
         if options.showProgress {
@@ -351,13 +357,45 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         view.addSubview(actionButton)
     }
     
+    fileprivate func setupDeleteButton() {
+        if let deleteButton = self.deleteButton {
+            deleteButton.removeFromSuperview()
+        }
+        
+        let avaiableSize = getInitialAvaiableSize()
+        let deleteButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 0)
+        
+        let deleteButton = UIButton(frame: deleteButtonFrame)
+        
+        //commentButton.setTitle("💬", for: UIControlState())
+        deleteButton.setImage(UIImage(named: "CollieGallery.bundle/delete", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControl.State())
+        deleteButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
+        deleteButton.setTitleColor(theme.closeButtonColor, for: UIControl.State())
+        
+        deleteButton.addTarget(self, action: #selector(deleteButtonTouched(_:)), for: .touchUpInside)
+        
+        
+        var shouldBeHidden = false
+        
+        if self.deleteButton != nil {
+            shouldBeHidden = self.deleteButton!.isHidden
+        }
+        
+        deleteButton.isHidden = shouldBeHidden
+        
+        
+        self.deleteButton = deleteButton
+        
+        view.addSubview(deleteButton)
+    }
+    
     fileprivate func setupCommentButton() {
         if let commentButton = self.commentButton {
             commentButton.removeFromSuperview()
         }
         
         let avaiableSize = getInitialAvaiableSize()
-        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 0)
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 1)
         
         let commentButton = UIButton(frame: closeButtonFrame)
         
@@ -389,7 +427,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         }
         
         let avaiableSize = getInitialAvaiableSize()
-        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 1)
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 2)
         
         let likeButton = UIButton(frame: closeButtonFrame)
         
@@ -422,7 +460,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         }
         
         let avaiableSize = getInitialAvaiableSize()
-        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 2)
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 3)
         
         let measurementButton = UIButton(frame: closeButtonFrame)
         
@@ -507,6 +545,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         setupCommentButton()
         setupLikeButton()
         setupMeasurementButton()
+        setupDeleteButton()
         updateContentOffset()
         
         updateCaptionText()
@@ -595,6 +634,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         commentButton?.isHidden = false
         likeButton?.isHidden = false
         measurementButton?.isHidden = false
+        deleteButton?.isHidden = false
         progressTrackView?.isHidden = false
         captionView.isHidden = captionView.titleLabel.text == nil && captionView.captionLabel.text == nil
         
@@ -605,6 +645,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
                                                     self?.actionButton?.alpha = 1.0
                                                     self?.commentButton?.alpha = 1.0
                                                     self?.likeButton?.alpha = 1.0
+                                                    self?.deleteButton?.alpha = 1.0
                                                     self?.measurementButton?.alpha = 1.0
                                                     self?.progressTrackView?.alpha = 1.0
                                                     self?.captionView.alpha = 1.0
@@ -619,6 +660,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
                                         self?.actionButton?.alpha = 0.0
                                         self?.commentButton?.alpha = 0.0
                                         self?.likeButton?.alpha = 0.0
+                                        self?.deleteButton?.alpha = 0.0
                                         self?.measurementButton?.alpha = 0.0
                                         self?.progressTrackView?.alpha = 0.0
                                         self?.captionView.alpha = 0.0
@@ -628,6 +670,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
                                         self?.actionButton?.isHidden = true
                                         self?.commentButton?.isHidden = true
                                         self?.likeButton?.isHidden = true
+                                        self?.deleteButton?.isHidden = true
                                         self?.measurementButton?.isHidden = true
                                         self?.progressTrackView?.isHidden = true
                                         self?.captionView.isHidden = true
@@ -702,6 +745,14 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         }
         
         showShareActivity()
+    }
+
+    @objc internal func deleteButtonTouched(_ sender: AnyObject) {
+        
+        if let customHandleBlock = options.deleteBlock {
+            customHandleBlock(pictures[currentPageIndex])
+            return
+        }
     }
     
     @objc internal func commentButtonTouched(_ sender: AnyObject) {

@@ -68,6 +68,8 @@ open class CollieGalleryOptions: NSObject {
     
     open var showMeasurementButton: Bool? = true
     
+    open var showDeleteButton: Bool? = true
+    
     /// Custom close button image name
     open var customCloseImageName: String? = nil
     
@@ -88,6 +90,8 @@ open class CollieGalleryOptions: NSObject {
     open var likeBlock: ((CollieGalleryPicture) -> Void)?
     
     open var measurementBlock: ((CollieGalleryPicture) -> Void)?
+    
+    open var deleteBlock: ((CollieGalleryPicture) -> Void)?
     
     /// Array with the custom buttons
     open var customActions: [CollieGalleryCustomAction] = []
