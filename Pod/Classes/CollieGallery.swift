@@ -698,7 +698,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     }
     
     fileprivate func getCustomButtonFrame(_ avaiableSize: CGSize, forIndex index: Int) -> CGRect {
-        let position = index + 2 - [self.commentButton, self.likeButton, self.deleteButton, self.measurementButton].filter{ $0?.isHidden ?? true }.count
+        let position = index + 2 - [options.showCommentsButton, options.showLikeButton, options.showDeleteButton, options.showMeasurementButton].filter{ $0 == false }.count
         return CGRect(x: avaiableSize.width - CGFloat(50 * position), y: buttonYOffset, width: 50, height: 50)
     }
     

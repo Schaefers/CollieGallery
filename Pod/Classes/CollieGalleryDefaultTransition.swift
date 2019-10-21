@@ -43,6 +43,8 @@ internal class CollieGalleryDefaultTransition: CollieGalleryTransitionProtocol {
         presentedController.actionButton?.center.x += self.offStage
         presentedController.commentButton?.center.x += self.offStage
         presentedController.likeButton?.center.x += self.offStage
+        presentedController.deleteButton?.center.x += self.offStage
+        presentedController.measurementButton?.center.x += self.offStage
         presentedController.progressTrackView?.center.y += self.offStage
         presentedController.captionView.center.y += self.offStage
         
@@ -56,6 +58,8 @@ internal class CollieGalleryDefaultTransition: CollieGalleryTransitionProtocol {
             presentedController.actionButton?.center.x -= self.offStage
             presentedController.commentButton?.center.x -= self.offStage
             presentedController.likeButton?.center.x -= self.offStage
+            presentedController.deleteButton?.center.x -= self.offStage
+            presentedController.measurementButton?.center.x -= self.offStage
             presentedController.progressTrackView?.center.y -= self.offStage
             presentedController.captionView.center.y -= self.offStage
             presentedController.pagingScrollView.transform = CGAffineTransform.identity
@@ -79,6 +83,8 @@ internal class CollieGalleryDefaultTransition: CollieGalleryTransitionProtocol {
             presentingController.actionButton?.center.x += self.offStage
             presentingController.commentButton?.center.x += self.offStage
             presentingController.likeButton?.center.x += self.offStage
+            presentingController.deleteButton?.center.x += self.offStage
+            presentingController.measurementButton?.center.x += self.offStage
             presentingController.progressTrackView?.center.y += self.offStage
             presentingController.captionView.center.y += self.offStage
             presentingController.pagingScrollView.transform = self.minorScale
