@@ -220,6 +220,10 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
             setupActionButton()
         }
         
+        if options.showDeleteButton ?? false {
+            setupDeleteButton()
+        }
+        
         if options.showCommentsButton ?? false {
             setupCommentButton()
         }
@@ -230,10 +234,6 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         if options.showMeasurementButton ?? false {
             setupMeasurementButton()
-        }
-        
-        if options.showDeleteButton ?? false {
-            setupDeleteButton()
         }
         
         setupCaptionView()
@@ -542,10 +542,10 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         setupCloseButton()
         setupActionButton()
+        setupDeleteButton()
         setupCommentButton()
         setupLikeButton()
         setupMeasurementButton()
-        setupDeleteButton()
         updateContentOffset()
         
         updateCaptionText()
@@ -698,8 +698,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     }
     
     fileprivate func getCustomButtonFrame(_ avaiableSize: CGSize, forIndex index: Int) -> CGRect {
-        let position = index + 2
-        
+        let position = index + 2 - [self.commentButton, self.likeButton, self.deleteButton, self.measurementButton].filter{ $0?.isHidden ?? true }.count
         return CGRect(x: avaiableSize.width - CGFloat(50 * position), y: buttonYOffset, width: 50, height: 50)
     }
     
