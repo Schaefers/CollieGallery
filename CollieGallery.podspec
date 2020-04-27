@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "CollieGallery"
-  s.version          = "0.6.8"
+  s.version          = "0.6.9"
   s.summary          = "Easy-to-use and highly customizable fullscreen image gallery with support for local and remote images written in Swift."
 
   s.description      = <<-DESC
@@ -20,5 +20,5 @@ DESC
   s.resource_bundles = {
     'CollieGallery' => ['Pod/Assets/*.png']
   }
-  s.dependency 'DeviceKit', '> 1.3'
+  s.dependency 'DeviceKit', '> 3.0'
 end
