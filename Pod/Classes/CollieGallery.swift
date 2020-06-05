@@ -505,11 +505,11 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         
         //likeButton.setTitle("👍", for: UIControlState())
         
-        measurementButton.setImage(UIImage(named: "CollieGallery.bundle/pin", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControl.State())
-        measurementButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
-        measurementButton.setTitleColor(theme.closeButtonColor, for: UIControl.State())
+        mapsButton.setImage(UIImage(named: "CollieGallery.bundle/pin", in: Bundle(for: CollieGallery.self), compatibleWith: nil), for: UIControl.State())
+        mapsButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Thin", size: 15)
+        mapsButton.setTitleColor(theme.closeButtonColor, for: UIControl.State())
         
-        measurementButton.addTarget(self, action: #selector(mapsButtonTouched(_:)(_:)), for: .touchUpInside)
+        mapsButton.addTarget(self, action: #selector(mapsButtonTouched(_:)), for: .touchUpInside)
         
         
         var shouldBeHidden = false
