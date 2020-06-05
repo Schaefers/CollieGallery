@@ -369,7 +369,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         }
         
         let avaiableSize = getInitialAvaiableSize()
-        let deleteButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 0)
+        let deleteButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 0 - [options.enableSave].filter{ $0 == false }.count)
         
         let deleteButton = UIButton(frame: deleteButtonFrame)
         
@@ -401,7 +401,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         }
         
         let avaiableSize = getInitialAvaiableSize()
-        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 1)
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 1 - [options.enableSave, options.showDeleteButton].filter{ $0 == false }.count )
         
         let commentButton = UIButton(frame: closeButtonFrame)
         
@@ -433,7 +433,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         }
         
         let avaiableSize = getInitialAvaiableSize()
-        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 2)
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 2 - [options.enableSave, options.showDeleteButton, options.showCommentsButton].filter{ $0 == false }.count)
         
         let likeButton = UIButton(frame: closeButtonFrame)
         
@@ -466,7 +466,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         }
         
         let avaiableSize = getInitialAvaiableSize()
-        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 3)
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 3 - [options.enableSave, options.showDeleteButton, options.showCommentsButton, options.showLikeButton].filter{ $0 == false }.count)
         
         let measurementButton = UIButton(frame: closeButtonFrame)
         
@@ -499,7 +499,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
         }
         
         let avaiableSize = getInitialAvaiableSize()
-        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 4)
+        let closeButtonFrame = getCustomButtonFrame(avaiableSize, forIndex: 4 - [options.enableSave, options.showDeleteButton, options.showCommentsButton, options.showLikeButton, options.showMeasurementButton].filter{ $0 == false }.count)
         
         let mapsButton = UIButton(frame: closeButtonFrame)
         
@@ -742,7 +742,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     }
     
     fileprivate func getCustomButtonFrame(_ avaiableSize: CGSize, forIndex index: Int) -> CGRect {
-        let position = index + 2 - [options.showCommentsButton, options.showLikeButton, options.showDeleteButton, options.showMeasurementButton, options.showMapsButton].filter{ $0 == false }.count
+        let position = index + 2
         return CGRect(x: avaiableSize.width - CGFloat(50 * position), y: buttonYOffset, width: 50, height: 50)
     }
     
