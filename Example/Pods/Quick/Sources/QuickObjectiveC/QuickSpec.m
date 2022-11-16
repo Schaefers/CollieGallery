@@ -1,12 +1,13 @@
 #import "QuickSpec.h"
 #import "QuickConfiguration.h"
-#import "NSString+QCKSelectorName.h"
-#import "World.h"
-#import <objc/runtime.h>
+
+#if __has_include("Quick-Swift.h")
+#import "Quick-Swift.h"
+#else
+#import <Quick/Quick-Swift.h>
+#endif
 
 static QuickSpec *currentSpec = nil;
-
-const void * const QCKExampleKey = &QCKExampleKey;
 
 @interface QuickSpec ()
 @property (nonatomic, strong) Example *example;
@@ -17,18 +18,79 @@ const void * const QCKExampleKey = &QCKExampleKey;
 #pragma mark - XCTestCase Overrides
 
 /**
- The runtime sends initialize to each class in a program just before the class, or any class
- that inherits from it, is sent its first message from within the program. QuickSpec hooks into
- this event to compile the example groups for this spec subclass.
+ Invocations for each test method in the test case. QuickSpec overrides this method to define a
+ new method for each example defined in +[QuickSpec spec].
 
- If an exception occurs when compiling the examples, report it to the user. Chances are they
- included an expectation outside of a "it", "describe", or "context" block.
+ @return An array of invocations that execute the newly defined example methods.
  */
-+ (void)initialize {
-    [QuickConfiguration initialize];
++ (NSArray *)testInvocations {
+    // Xcode 13.3 hack, see this issue for more info: https://github.com/Quick/Quick/issues/1123
+    // In case of fix in later versions next line can be removed
+    [[QuickTestObservation sharedInstance] buildAllExamplesIfNeeded];
 
+    NSArray *examples = [[World sharedWorld] examplesForSpecClass:[self class]];
+    NSMutableArray *invocations = [NSMutableArray arrayWithCapacity:[examples count]];
+    
+    NSMutableSet<NSString*> *selectorNames = [NSMutableSet set];
+    
+    for (Example *example in examples) {
+        SEL selector = [self addInstanceMethodForExample:example classSelectorNames:selectorNames];
+
+        NSMethodSignature *signature = [self instanceMethodSignatureForSelector:selector];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+        invocation.selector = selector;
+
+        [invocations addObject:invocation];
+    }
+
+    return invocations;
+}
+
+/**
+ This method is used as a hook for injecting test methods into the
+ Objective-C runtime on individual test runs.
+ 
+ When `xctest` runs a test on a single method, it does not call
+ `defaultTestSuite` on the test class but rather calls
+ `instancesRespondToSelector:` to build its own suite.
+ 
+ In normal conditions, Quick uses the implicit call to `defaultTestSuite`
+ to both generate examples and inject them as methods by way of
+ `testInvocations`.  Under single test conditions, there's no implicit
+ call to `defaultTestSuite` so we make it explicitly here.
+ */
++ (BOOL)instancesRespondToSelector:(SEL)aSelector {
+    [self defaultTestSuite];
+    return [super instancesRespondToSelector:aSelector];
+}
+
+#pragma mark - Public Interface
+
+- (void)spec { }
+
++ (QuickSpec*) current {
+    return currentSpec;
+}
+
+#pragma mark - Internal Methods
+
+/**
+ Runs the `spec` method and builds the examples for this class.
+
+ It's safe to call this method multiple times. If the examples for the class have been built, invocation
+ of this method has no effect.
+ */
++ (void)buildExamplesIfNeeded {
+    [QuickConfiguration class];
     World *world = [World sharedWorld];
-    [world performWithCurrentExampleGroup:[world rootExampleGroupForSpecClass:self] closure:^{
+
+    if ([world isRootExampleGroupInitializedForSpecClass:[self class]]) {
+        // The examples for this subclass have been already built. Skipping.
+        return;
+    }
+
+    ExampleGroup *rootExampleGroup = [world rootExampleGroupForSpecClass:[self class]];
+    [world performWithCurrentExampleGroup:rootExampleGroup closure:^{
         QuickSpec *spec = [self new];
 
         @try {
@@ -45,47 +107,10 @@ const void * const QCKExampleKey = &QCKExampleKey;
              @"Here's the original exception: '%@', reason: '%@', userInfo: '%@'",
              exception.name, exception.reason, exception.userInfo];
         }
-        [self testInvocations];
     }];
 }
 
-/**
- Invocations for each test method in the test case. QuickSpec overrides this method to define a
- new method for each example defined in +[QuickSpec spec].
-
- @return An array of invocations that execute the newly defined example methods.
- */
-+ (NSArray *)testInvocations {
-    NSArray *examples = [[World sharedWorld] examplesForSpecClass:[self class]];
-    NSMutableArray *invocations = [NSMutableArray arrayWithCapacity:[examples count]];
-    
-    NSMutableSet<NSString*> *selectorNames = [NSMutableSet set];
-    
-    for (Example *example in examples) {
-        SEL selector = [self addInstanceMethodForExample:example classSelectorNames:selectorNames];
-        NSInvocation *invocation = [self invocationForInstanceMethodWithSelector:selector
-                                                                         example:example];
-        [invocations addObject:invocation];
-    }
-
-    return invocations;
-}
-
-/**
- XCTest sets the invocation for the current test case instance using this setter.
- QuickSpec hooks into this event to give the test case a reference to the current example.
- It will need this reference to correctly report its name to XCTest.
- */
-- (void)setInvocation:(NSInvocation *)invocation {
-    self.example = objc_getAssociatedObject(invocation, QCKExampleKey);
-    [super setInvocation:invocation];
-}
-
-#pragma mark - Public Interface
-
-- (void)spec { }
-
-#pragma mark - Internal Methods
+- (void)example_thing:(void (^)(void))completionHandler {}
 
 /**
  QuickSpec uses this method to dynamically define a new instance method for the
@@ -104,29 +129,24 @@ const void * const QCKExampleKey = &QCKExampleKey;
  @return The selector of the newly defined instance method.
  */
 + (SEL)addInstanceMethodForExample:(Example *)example classSelectorNames:(NSMutableSet<NSString*> *)selectorNames {
-    IMP implementation = imp_implementationWithBlock(^(QuickSpec *self){
+    IMP implementation = imp_implementationWithBlock(^(QuickSpec *self, void (^completionHandler)(void)){
+        self.example = example;
         currentSpec = self;
-        [example run];
+        [example runWithCompletionHandler:completionHandler];
     });
-    NSCharacterSet *characterSet = [NSCharacterSet alphanumericCharacterSet];
-    NSMutableString *sanitizedFileName = [NSMutableString string];
-    for (NSUInteger i = 0; i < example.callsite.file.length; i++) {
-        unichar ch = [example.callsite.file characterAtIndex:i];
-        if ([characterSet characterIsMember:ch]) {
-            [sanitizedFileName appendFormat:@"%c", ch];
-        }
-    }
 
-    const char *types = [[NSString stringWithFormat:@"%s%s%s", @encode(id), @encode(id), @encode(SEL)] UTF8String];
-    
-    NSString *originalName = example.name.qck_selectorName;
+    const char *types = [[NSString stringWithFormat:@"%s%s%s@?<v@?>", @encode(void), @encode(id), @encode(SEL)] UTF8String];
+
+    NSString *originalName = [QCKObjCStringUtils c99ExtendedIdentifierFrom:example.name];
     NSString *selectorName = originalName;
     NSUInteger i = 2;
-    
-    while ([selectorNames containsObject:selectorName]) {
+
+    while ([selectorNames containsObject:[selectorName stringByAppendingFormat:@"%s", @encode(SEL)]]) {
         selectorName = [NSString stringWithFormat:@"%@_%tu", originalName, i++];
     }
-    
+
+    selectorName = [NSString stringWithFormat:@"%@%s", selectorName, @encode(SEL)];
+
     [selectorNames addObject:selectorName];
     
     SEL selector = NSSelectorFromString(selectorName);
@@ -135,36 +155,39 @@ const void * const QCKExampleKey = &QCKExampleKey;
     return selector;
 }
 
-+ (NSInvocation *)invocationForInstanceMethodWithSelector:(SEL)selector
-                                                  example:(Example *)example {
-    NSMethodSignature *signature = [self instanceMethodSignatureForSelector:selector];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-    invocation.selector = selector;
-    objc_setAssociatedObject(invocation,
-                             QCKExampleKey,
-                             example,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    return invocation;
-}
-
 /**
  This method is used to record failures, whether they represent example
  expectations that were not met, or exceptions raised during test setup
  and teardown. By default, the failure will be reported as an
  XCTest failure, and the example will be highlighted in Xcode.
  */
-- (void)recordFailureWithDescription:(NSString *)description
-                              inFile:(NSString *)filePath
-                              atLine:(NSUInteger)lineNumber
-                            expected:(BOOL)expected {
-    if (self.example.isSharedExample) {
-        filePath = self.example.callsite.file;
-        lineNumber = self.example.callsite.line;
+- (void)recordIssue:(XCTIssue *)issue {
+    if (self != [QuickSpec current]) {
+        [[QuickSpec current] recordIssue:issue];
+        return;
     }
-    [currentSpec.testRun recordFailureWithDescription:description
-                                               inFile:filePath
-                                               atLine:lineNumber
-                                             expected:expected];
+
+    if (self.example.isSharedExample) {
+        XCTSourceCodeLocation *location = [[XCTSourceCodeLocation alloc] initWithFilePath:self.example.callsite.file
+                                                                               lineNumber:self.example.callsite.line];
+        XCTSourceCodeContext *sourceCodeContext = [[XCTSourceCodeContext alloc] initWithLocation:location];
+        XCTIssue *newIssue = [[XCTIssue alloc] initWithType:issue.type
+                                         compactDescription:issue.compactDescription
+                                        detailedDescription:issue.detailedDescription
+                                          sourceCodeContext:sourceCodeContext
+                                            associatedError:issue.associatedError
+                                                attachments:issue.attachments];
+        [super recordIssue:newIssue];
+    } else {
+        [super recordIssue:issue];
+    }
 }
 
 @end
+
+#pragma mark - Test Observation
+
+__attribute__((constructor))
+static void registerQuickTestObservation(void) {
+    [[XCTestObservationCenter sharedTestObservationCenter] addTestObserver:[QuickTestObservation sharedInstance]];
+}

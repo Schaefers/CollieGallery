@@ -3,6 +3,7 @@
 project 'CollieGallery'
 inhibit_all_warnings!
 use_frameworks!
+platform :ios, '13.0'
 
 target 'CollieGallery_Example' do
     pod 'CollieGallery', :path => '../'
@@ -10,14 +11,14 @@ end
 
 target 'CollieGallery_Tests' do
     pod 'CollieGallery', :path => '../'
-    pod 'Quick', '0.10.0’
-    pod 'Nimble', '5.0.0'
+    pod 'Quick', '6.0.1’
+    pod 'Nimble', '11.2.0'
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['SWIFT_VERSION'] = '4.1'
+      config.build_settings['SWIFT_VERSION'] = '5.0'
       config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.10'
     end
   end

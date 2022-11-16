@@ -1,22 +1,31 @@
 PODS:
-  - CollieGallery (0.4.0)
-  - Nimble (5.0.0)
-  - Quick (0.10.0)
+  - CollieGallery (0.7.2):
+    - DeviceKit (= 5.0)
+  - DeviceKit (5.0.0)
+  - Nimble (11.2.0)
+  - Quick (6.0.1)
 
 DEPENDENCIES:
   - CollieGallery (from `../`)
-  - Nimble (= 5.0.0)
-  - Quick (= 0.10.0)
+  - Nimble (= 11.2.0)
+  - Quick (= 6.0.1)
+
+SPEC REPOS:
+  trunk:
+    - DeviceKit
+    - Nimble
+    - Quick
 
 EXTERNAL SOURCES:
   CollieGallery:
     :path: "../"
 
 SPEC CHECKSUMS:
-  CollieGallery: 45a82de352e130e5ad2246f7e09e0ec2fb3f4510
-  Nimble: 56fc9f5020effa2206de22c3dd910f4fb011b92f
-  Quick: 5d290df1c69d5ee2f0729956dcf0fd9a30447eaa
+  CollieGallery: 32046ad98223e8e5fb606a815ea8ead793148467
+  DeviceKit: 0fd016a2cb67aca17c33dc23171cac270131eb88
+  Nimble: cab2cc29436a378f595e8babd231440dfcb0a358
+  Quick: abd15c0936cf347a5e36c51325697d12aebc3c5a
 
-PODFILE CHECKSUM: 2b4e4abfaa0e738ae0d88bfe628d66a66b4d64a4
+PODFILE CHECKSUM: 52a693f6cde5fd051bf662a980a91bfdc92c35e8
 
-COCOAPODS: 1.1.0.rc.3
+COCOAPODS: 1.11.3

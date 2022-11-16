@@ -49,6 +49,8 @@ typedef NSDictionary *(^QCKDSLSharedExampleContext)(void);
 typedef void (^QCKDSLSharedExampleBlock)(QCKDSLSharedExampleContext);
 typedef void (^QCKDSLEmptyBlock)(void);
 typedef void (^QCKDSLExampleMetadataBlock)(ExampleMetadata *exampleMetadata);
+typedef void (^QCKDSLAroundExampleBlock)(QCKDSLEmptyBlock runExample);
+typedef void (^QCKDSLAroundExampleMetadataBlock)(ExampleMetadata *exampleMetadata, QCKDSLEmptyBlock runExample);
 
 #define QUICK_EXPORT FOUNDATION_EXPORT
 
@@ -61,6 +63,9 @@ QUICK_EXPORT void qck_beforeEach(QCKDSLEmptyBlock closure);
 QUICK_EXPORT void qck_beforeEachWithMetadata(QCKDSLExampleMetadataBlock closure);
 QUICK_EXPORT void qck_afterEach(QCKDSLEmptyBlock closure);
 QUICK_EXPORT void qck_afterEachWithMetadata(QCKDSLExampleMetadataBlock closure);
+QUICK_EXPORT void qck_aroundEach(QCKDSLAroundExampleBlock closure);
+QUICK_EXPORT void qck_aroundEachWithMetadata(QCKDSLAroundExampleMetadataBlock closure);
+QUICK_EXPORT void qck_justBeforeEach(QCKDSLEmptyBlock closure);
 QUICK_EXPORT void qck_pending(NSString *description, QCKDSLEmptyBlock closure);
 QUICK_EXPORT void qck_xdescribe(NSString *description, QCKDSLEmptyBlock closure);
 QUICK_EXPORT void qck_xcontext(NSString *description, QCKDSLEmptyBlock closure);
@@ -169,6 +174,22 @@ static inline void afterEachWithMetadata(QCKDSLExampleMetadataBlock closure) {
     qck_afterEachWithMetadata(closure);
 }
 
+static inline void aroundEach(QCKDSLAroundExampleBlock closure) __attribute__((unavailable("aroundEach is no longer supported for Objective-C tests."))) {};
+
+static inline void aroundEachWithMetadata(QCKDSLAroundExampleMetadataBlock closure) __attribute__((unavailable("aroundEachWithMetadata is no longer supported for Objective-C tests."))) {};
+
+/**
+    Defines a closure to be run prior to each example but after any beforeEach blocks.
+    This closure is not run for pending or otherwise disabled examples.
+    An example group may contain an unlimited number of justBeforeEach. They'll be
+    run in the order they're defined, but you shouldn't rely on that behavior.
+
+    @param closure The closure to be run prior to each example but before any beforeEach blocks in the test suite.
+ */
+static inline void justBeforeEach(QCKDSLEmptyBlock closure) {
+    qck_justBeforeEach(closure);
+}
+
 /**
     Defines an example or example group that should not be executed. Use `pending` to temporarily disable
     examples or groups that should not be run yet.
@@ -220,15 +241,19 @@ static inline void fcontext(NSString *description, QCKDSLEmptyBlock closure) {
 #define fitBehavesLike qck_fitBehavesLike
 #endif
 
-#define qck_it qck_it_builder(@{}, @(__FILE__), __LINE__)
-#define qck_xit qck_it_builder(@{Filter.pending: @YES}, @(__FILE__), __LINE__)
-#define qck_fit qck_it_builder(@{Filter.focused: @YES}, @(__FILE__), __LINE__)
-#define qck_itBehavesLike qck_itBehavesLike_builder(@{}, @(__FILE__), __LINE__)
-#define qck_xitBehavesLike qck_itBehavesLike_builder(@{Filter.pending: @YES}, @(__FILE__), __LINE__)
-#define qck_fitBehavesLike qck_itBehavesLike_builder(@{Filter.focused: @YES}, @(__FILE__), __LINE__)
+#define qck_it qck_it_builder(@(__FILE__), __LINE__)
+#define qck_xit qck_xit_builder(@(__FILE__), __LINE__)
+#define qck_fit qck_fit_builder(@(__FILE__), __LINE__)
+#define qck_itBehavesLike qck_itBehavesLike_builder(@(__FILE__), __LINE__)
+#define qck_xitBehavesLike qck_xitBehavesLike_builder(@(__FILE__), __LINE__)
+#define qck_fitBehavesLike qck_fitBehavesLike_builder(@(__FILE__), __LINE__)
 
 typedef void (^QCKItBlock)(NSString *description, QCKDSLEmptyBlock closure);
 typedef void (^QCKItBehavesLikeBlock)(NSString *description, QCKDSLSharedExampleContext context);
 
-QUICK_EXPORT QCKItBlock qck_it_builder(NSDictionary *flags, NSString *file, NSUInteger line);
-QUICK_EXPORT QCKItBehavesLikeBlock qck_itBehavesLike_builder(NSDictionary *flags, NSString *file, NSUInteger line);
+QUICK_EXPORT QCKItBlock qck_it_builder(NSString *file, NSUInteger line);
+QUICK_EXPORT QCKItBlock qck_xit_builder(NSString *file, NSUInteger line);
+QUICK_EXPORT QCKItBlock qck_fit_builder(NSString *file, NSUInteger line);
+QUICK_EXPORT QCKItBehavesLikeBlock qck_itBehavesLike_builder(NSString *file, NSUInteger line);
+QUICK_EXPORT QCKItBehavesLikeBlock qck_xitBehavesLike_builder(NSString *file, NSUInteger line);
+QUICK_EXPORT QCKItBehavesLikeBlock qck_fitBehavesLike_builder(NSString *file, NSUInteger line);
