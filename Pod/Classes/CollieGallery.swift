@@ -53,7 +53,14 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     fileprivate var initialCustomSize: CGSize?
     
     fileprivate var buttonYOffset: CGFloat {
-        return Device.current.isOneOf(Device.allDevicesWithSensorHousing + Device.allSimulatorDevicesWithSensorHousing) ? 30 : 0
+        switch Device.current {
+        case .iPhone14Pro, .iPhone14ProMax, .simulator(.iPhone14Pro), .simulator(.iPhone14ProMax):
+            return 40
+        case let device where (Device.allDevicesWithSensorHousing + Device.allSimulatorDevicesWithSensorHousing).contains(device):
+            return 30
+        default:
+            return 0
+        }
     }
     // MARK: - Internal properties
     internal var options = CollieGalleryOptions()
