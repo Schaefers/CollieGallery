@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "CollieGallery"
-  s.version          = "0.7.1"
+  s.version          = "0.7.2"
   s.summary          = "Easy-to-use and highly customizable fullscreen image gallery with support for local and remote images written in Swift."
 
   s.description      = <<-DESC
@@ -13,12 +13,12 @@ DESC
   s.author           = { "Guilherme Munhoz" => "g.araujo.munhoz@gmail.com" }
   s.source           = { :git => "https://github.com/gmunhoz/CollieGallery.git", :tag => s.version.to_s }
 
-  s.platform     = :ios, '10.0'
+  s.platform     = :ios, '11.0'
   s.requires_arc = true
 
   s.source_files = 'Pod/Classes/**/*'
   s.resource_bundles = {
     'CollieGallery' => ['Pod/Assets/*.png']
   }
-  s.dependency 'DeviceKit', '> 3.0'
+  s.dependency 'DeviceKit', '5.0'
 end
