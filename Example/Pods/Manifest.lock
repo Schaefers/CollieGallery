@@ -1,17 +1,32 @@
 PODS:
-  - CollieGallery (0.7.2):
-    - DeviceKit (= 5.0)
-  - DeviceKit (5.0.0)
-  - Nimble (11.2.0)
-  - Quick (6.0.1)
+  - CollieGallery (0.7.4):
+    - DeviceKit (= 5.2)
+  - CwlCatchException (2.2.0):
+    - CwlCatchExceptionSupport (~> 2.2.0)
+  - CwlCatchExceptionSupport (2.2.0)
+  - CwlMachBadInstructionHandler (2.2.0)
+  - CwlPosixPreconditionTesting (2.2.0)
+  - CwlPreconditionTesting (2.2.1):
+    - CwlCatchException (~> 2.2.0)
+    - CwlMachBadInstructionHandler (~> 2.2.0)
+    - CwlPosixPreconditionTesting (~> 2.2.0)
+  - DeviceKit (5.2.0)
+  - Nimble (13.3.0):
+    - CwlPreconditionTesting (~> 2.2.0)
+  - Quick (7.6.0)
 
 DEPENDENCIES:
   - CollieGallery (from `../`)
-  - Nimble (= 11.2.0)
-  - Quick (= 6.0.1)
+  - Nimble (= 13.3.0)
+  - Quick (= 7.6.0)
 
 SPEC REPOS:
   trunk:
+    - CwlCatchException
+    - CwlCatchExceptionSupport
+    - CwlMachBadInstructionHandler
+    - CwlPosixPreconditionTesting
+    - CwlPreconditionTesting
     - DeviceKit
     - Nimble
     - Quick
@@ -21,11 +36,16 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  CollieGallery: 32046ad98223e8e5fb606a815ea8ead793148467
-  DeviceKit: 0fd016a2cb67aca17c33dc23171cac270131eb88
-  Nimble: cab2cc29436a378f595e8babd231440dfcb0a358
-  Quick: abd15c0936cf347a5e36c51325697d12aebc3c5a
+  CollieGallery: 35013e571fcf97bc33174ec5448944d41b8fe0da
+  CwlCatchException: 51bf8319009a31104ea6f0568730d1ecc25b6454
+  CwlCatchExceptionSupport: 1345d6adb01a505933f2bc972dab60dcb9ce3e50
+  CwlMachBadInstructionHandler: ea1030428925d9bf340882522af30712fb4bf356
+  CwlPosixPreconditionTesting: a125dee731883f2582715f548c6b6c92c7fde145
+  CwlPreconditionTesting: ccfd08aca58d14e04062b2a3dd2fd52e09857453
+  DeviceKit: 4167e8ffbfaff06e346f113e0142ac18fc1b16ff
+  Nimble: 3ac6c6b0b7e9835d1540b6507d8054b12a415536
+  Quick: a65742a544182cb9ecb231e1e71bcb87f4d12ce3
 
-PODFILE CHECKSUM: 52a693f6cde5fd051bf662a980a91bfdc92c35e8
+PODFILE CHECKSUM: ade0a50363b0b903bef65357df796e8f9a2382bc
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.15.2
