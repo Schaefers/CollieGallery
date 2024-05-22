@@ -54,7 +54,7 @@ open class CollieGallery: UIViewController, UIScrollViewDelegate, CollieGalleryV
     
     fileprivate var buttonYOffset: CGFloat {
         switch Device.current {
-        case .iPhone14Pro, .iPhone14ProMax, .simulator(.iPhone14Pro), .simulator(.iPhone14ProMax):
+        case let device where (Device.allDevicesWithDynamicIsland + Device.allSimulatorDevicesWithSensorHousing).contains(device):
             return 40
         case let device where (Device.allDevicesWithSensorHousing + Device.allSimulatorDevicesWithSensorHousing).contains(device):
             return 30
