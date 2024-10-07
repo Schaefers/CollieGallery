@@ -20,5 +20,5 @@ DESC
   s.resource_bundles = {
     'CollieGallery' => ['Pod/Assets/*.png']
   }
-  s.dependency 'DeviceKit', '5.2'
+  s.dependency 'DeviceKit', '~> 5.0'
 end
